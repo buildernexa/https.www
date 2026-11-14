@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="id" data-theme="sunset" data-density="comfortable">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TikTok Studio</title>
+<style>
+:root{
+  --bg:#FAF7F0;--fg:#000;--card:#fff;--border:#000;
+  --bw:4px;--r:10px;--shadow:6px 6px 0 var(--border);
+  --accent:#FFDE00;--accent-2:#00E5FF;--accent-3:#FF69B4;
+  --sp:20px;--font:"Space Grotesk","Arial Black",system-ui,sans-serif;
+  --mono:"JetBrains Mono","Consolas",monospace;
+  --t:90ms cubic-bezier(.2,.6,.3,1);
+}
+[data-density="compact"]{--sp:12px}
+[data-density="comfortable"]{--sp:20px}
+[data-density="roomy"]{--sp:32px}
+[data-theme="sunset"]{--bg:#FAF7F0;--fg:#000;--card:#fff;--border:#000;--accent:#FFDE00;--accent-2:#00E5FF;--accent-3:#FF69B4}
+[data-theme="mint"]{--bg:#E8FFF4;--fg:#002018;--card:#fff;--border:#002018;--accent:#00E5A0;--accent-2:#00B4D8;--accent-3:#FFB4E1}
+[data-theme="ink"]{--bg:#0F0F0F;--fg:#F5F5F5;--card:#1A1A1A;--border:#F5F5F5;--accent:#C4F000;--accent-2:#00E5FF;--accent-3:#FF69B4}
+[data-theme="acid"]{--bg:#0A0A0A;--fg:#C4F000;--card:#141414;--border:#C4F000;--accent:#C4F000;--accent-2:#FF69B4;--accent-3:#00E5FF}
+[data-theme="paper"]{--bg:#F4F0E6;--fg:#1A1A1A;--card:#FFFDF7;--border:#1A1A1A;--accent:#E63946;--accent-2:#457B9D;--accent-3:#F1C40F}
+[data-theme="royal"]{--bg:#1A0F2E;--fg:#F0E6FF;--card:#2A1A47;--border:#C4A0FF;--accent:#C4A0FF;--accent-2:#FF69B4;--accent-3:#FFD93D}
+[data-theme="candy"]{--bg:#FFF0F5;--fg:#3A0F2E;--card:#fff;--border:#3A0F2E;--accent:#FFB4E1;--accent-2:#A0E8FF;--accent-3:#FFD93D}
+[data-theme="steel"]{--bg:#2B2D33;--fg:#E4E6EB;--card:#3A3D44;--border:#E4E6EB;--accent:#7AA2F7;--accent-2:#9ECE6A;--accent-3:#E0AF68}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--fg);line-height:1.45;display:flex;flex-direction:column;min-height:100vh;-webkit-font-smoothing:antialiased;transition:background var(--t),color var(--t)}
+.topbar{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--card);border-bottom:var(--bw) solid var(--border);position:sticky;top:0;z-index:10;flex-wrap:wrap}
+.logo{font-weight:900;font-size:20px;letter-spacing:-1px;text-transform:uppercase;cursor:pointer;user-select:none}
+.logo span{color:var(--accent-2)}
+.nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.nav-link{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:8px 12px;border:3px solid transparent;border-radius:8px;cursor:pointer;background:transparent;color:var(--fg);font-family:var(--font);transition:var(--t)}
+.nav-link:hover{border-color:var(--border);background:var(--accent);color:#000}
+.nav-link.on{background:var(--fg);color:var(--bg)}
+.theme-picker{display:flex;gap:6px}
+.dot{width:22px;height:22px;border:3px solid var(--border);border-radius:50%;cursor:pointer;padding:0;box-shadow:2px 2px 0 var(--border);transition:var(--t)}
+.dot:hover{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--border)}
+.dot.on{outline:3px solid var(--accent-2);outline-offset:2px}
+.page{flex:1;width:100%;max-width:1000px;margin:0 auto;padding:var(--sp);display:flex;flex-direction:column;gap:var(--sp)}
+.view{display:none;flex-direction:column;gap:var(--sp)}
+.view.on{display:flex}
+.card{background:var(--card);border:var(--bw) solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:calc(var(--sp)*1.2);transition:background var(--t),border-color var(--t)}
+.h1-sm{font-size:28px;font-weight:900;letter-spacing:-1px;text-transform:uppercase}
+.hero{padding:calc(var(--sp)*1.6) calc(var(--sp)*1.2)}
+.hero-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--accent-2);margin-bottom:10px}
+.hero h1{font-size:clamp(36px,7vw,64px);font-weight:900;letter-spacing:-3px;text-transform:uppercase;line-height:.9;margin-bottom:12px}
+.hint{font-size:12px;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px}
+.input-row{display:flex;gap:12px;flex-wrap:wrap}
+.neo-input{flex:1;min-width:220px;font-family:var(--font);font-size:15px;font-weight:600;padding:14px 16px;background:var(--bg);color:var(--fg);border:var(--bw) solid var(--border);border-radius:var(--r);outline:none;transition:box-shadow var(--t);resize:vertical}
+.neo-input:focus{box-shadow:0 0 0 4px var(--accent-2)}
+.neo-input::placeholder{opacity:.4;font-weight:500}
+textarea.neo-input{min-height:120px;font-family:var(--mono);font-size:13px}
+.btn{font-family:var(--font);font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.5px;padding:12px 20px;background:var(--card);color:var(--fg);border:var(--bw) solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer;transition:var(--t);white-space:nowrap}
+.btn:hover{transform:translate(2px,2px);box-shadow:4px 4px 0 var(--border)}
+.btn:active{transform:translate(6px,6px);box-shadow:0 0 0 var(--border)}
+.btn:focus-visible{outline:3px solid var(--accent-2);outline-offset:4px}
+.btn-primary{background:var(--accent);color:#000}
+.btn-sm{padding:8px 14px;font-size:11px}
+.status{margin-top:14px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;min-height:18px}
+.status.err{color:var(--accent-3)}
+.status.ok{color:#00875A}
+[data-theme="ink"] .status.ok,[data-theme="acid"] .status.ok,[data-theme="royal"] .status.ok,[data-theme="steel"] .status.ok{color:var(--accent)}
+.result{display:grid;gap:16px}
+.thumb-wrap{border:var(--bw) solid var(--border);border-radius:var(--r);overflow:hidden;aspect-ratio:9/16;max-height:400px;background:var(--bg);position:relative}
+.thumb{width:100%;height:100%;object-fit:cover;display:block}
+.meta-title{font-size:18px;font-weight:800;line-height:1.25;margin-bottom:10px;word-break:break-word}
+.meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tag{display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:5px 10px;border:3px solid var(--border);border-radius:6px;background:var(--accent-2);color:#000}
+.tag:nth-child(2){background:var(--accent)}
+.tag:nth-child(3){background:var(--bg);color:var(--fg)}
+.tag-sm{font-size:10px;padding:3px 8px;border-width:2px}
+.tag-ok{background:var(--accent-2);color:#000}
+.tag-err{background:var(--accent-3);color:#000}
+.source-list{font-size:11px;font-weight:600;opacity:.6;text-transform:uppercase;letter-spacing:.4px;margin-top:6px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto;border:var(--bw) solid var(--border);border-radius:var(--r)}
+.neo-table{width:100%;border-collapse:collapse;font-size:13px}
+.neo-table th{background:var(--fg);color:var(--bg);text-align:left;font-weight:900;text-transform:uppercase;font-size:11px;letter-spacing:.6px;padding:12px}
+.neo-table td{padding:12px;border-top:3px solid var(--border);font-weight:600}
+.neo-table tbody tr:hover td{background:var(--accent);color:#000}
+.trunc{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mono{font-family:var(--mono);font-size:11px}
+.empty{text-align:center;padding:32px!important;opacity:.5}
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:16px}
+.theme-tile{height:80px;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:.6px;border:var(--bw) solid var(--border);border-radius:var(--r);cursor:pointer;box-shadow:var(--shadow);transition:var(--t);font-family:var(--font)}
+.theme-tile:hover{transform:translate(2px,2px);box-shadow:4px 4px 0 var(--border)}
+.theme-tile[data-theme-set="sunset"]{background:linear-gradient(135deg,#FFDE00,#FF69B4);color:#000}
+.theme-tile[data-theme-set="mint"]{background:linear-gradient(135deg,#00E5A0,#00B4D8);color:#002018}
+.theme-tile[data-theme-set="ink"]{background:linear-gradient(135deg,#1A1A1A,#C4F000);color:#fff}
+.theme-tile[data-theme-set="acid"]{background:linear-gradient(135deg,#0A0A0A,#C4F000);color:#C4F000}
+.theme-tile[data-theme-set="paper"]{background:linear-gradient(135deg,#F4F0E6,#E63946);color:#1A1A1A}
+.theme-tile[data-theme-set="royal"]{background:linear-gradient(135deg,#2A1A47,#C4A0FF);color:#F0E6FF}
+.theme-tile[data-theme-set="candy"]{background:linear-gradient(135deg,#FFB4E1,#A0E8FF);color:#3A0F2E}
+.theme-tile[data-theme-set="steel"]{background:linear-gradient(135deg,#3A3D44,#7AA2F7);color:#E4E6EB}
+.theme-tile.on{outline:4px solid var(--accent-2);outline-offset:4px}
+.row-gap{display:flex;gap:10px;flex-wrap:wrap}
+.about-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.about-list li{padding:10px 14px;background:var(--bg);border:3px solid var(--border);border-radius:var(--r);font-size:13px;font-weight:600}
+.about-list b{color:var(--accent-2)}
+.batch-grid{display:grid;gap:12px}
+.batch-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg);border:3px solid var(--border);border-radius:var(--r);font-size:12px;font-weight:700;flex-wrap:wrap}
+.batch-row .b-status{margin-left:auto;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:6px;background:var(--accent-2);color:#000}
+.batch-row .b-status.err{background:var(--accent-3)}
+.batch-row .b-status.ok{background:var(--accent)}
+.toast-wrap{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:100;pointer-events:none}
+.toast{background:var(--fg);color:var(--bg);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:12px 18px;border:var(--bw) solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);animation:toastIn 200ms ease both;max-width:320px}
+.toast.err{background:var(--accent-3);color:#000}
+.toast.ok{background:var(--accent);color:#000}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.foot{display:flex;justify-content:space-between;padding:16px 20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;opacity:.6;border-top:var(--bw) solid var(--border);margin-top:auto;gap:12px;flex-wrap:wrap}
+.spin{display:inline-block;width:12px;height:12px;border:3px solid var(--fg);border-top-color:transparent;border-radius:50%;animation:spin 800ms linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(min-width:720px){.result{grid-template-columns:200px 1fr}.actions{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo" onclick="nav('home')">TT<span>/</span>ST</div>
+  <nav class="nav">
+    <button class="nav-link on" data-view="home">HOME</button>
+    <button class="nav-link" data-view="batch">BATCH</button>
+    <button class="nav-link" data-view="history">HISTORY</button>
+    <button class="nav-link" data-view="themes">THEMES</button>
+    <button class="nav-link" data-view="about">ABOUT</button>
+  </nav>
+  <div class="theme-picker" id="theme-picker"></div>
+</header>
+
+<main class="page">
+
+<!-- HOME -->
+<section class="view on" id="v-home">
+  <div class="card hero">
+    <div class="hero-label">// RESOLVE · PULL · ARCHIVE</div>
+    <h1>PASTE.<br>RESOLVE.<br>PULL.</h1>
+    <p class="hint">URL TikTok · 4 sumber rotasi · video · audio · thumbnail</p>
+    <div class="input-row">
+      <input id="url" class="neo-input" type="url" placeholder="https://www.tiktok.com/@user/video/..." autocomplete="off" spellcheck="false">
+      <button id="go" class="btn btn-primary">RESOLVE</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card result" id="result" style="display:none">
+    <div class="thumb-wrap"><img id="thumb" class="thumb" alt=""></div>
+    <div class="meta">
+      <div class="meta-title" id="title"></div>
+      <div class="meta-row">
+        <span class="tag" id="author"></span>
+        <span class="tag" id="source"></span>
+        <span class="tag" id="dur"></span>
+      </div>
+      <div class="source-list" id="sources"></div>
+    </div>
+    <div class="actions">
+      <button id="dl-video" class="btn btn-primary">MP4</button>
+      <button id="dl-audio" class="btn">MP3</button>
+      <button id="dl-thumb" class="btn">THUMB</button>
+      <button id="copy" class="btn">COPY</button>
+      <button id="again" class="btn">RESET</button>
+    </div>
+  </div>
+</section>
+
+<!-- BATCH -->
+<section class="view" id="v-batch">
+  <div class="card">
+    <div class="section-head"><h1 class="h1-sm">BATCH</h1></div>
+    <p class="hint">Satu URL per baris · resolve berurutan · unduh MP4</p>
+    <textarea id="batch-input" class="neo-input" placeholder="https://www.tiktok.com/@user/video/...&#10;https://vm.tiktok.com/..."></textarea>
+    <div class="row-gap" style="margin-top:14px">
+      <button id="batch-go" class="btn btn-primary">RESOLVE ALL</button>
+      <button id="batch-dl" class="btn">DOWNLOAD ALL</button>
+      <button id="batch-clear" class="btn">CLEAR</button>
+    </div>
+    <div id="batch-list" class="batch-grid" style="margin-top:16px"></div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="view" id="v-history">
+  <div class="card">
+    <div class="section-head">
+      <h1 class="h1-sm">HISTORY</h1>
+      <button class="btn btn-sm" id="clear-hist">CLEAR</button>
+    </div>
+    <div class="table-wrap">
+      <table class="neo-table">
+        <thead><tr><th>WAKTU</th><th>JUDUL</th><th>AUTHOR</th><th>SUMBER</th><th>STATUS</th></tr></thead>
+        <tbody id="hist-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- THEMES -->
+<section class="view" id="v-themes">
+  <div class="card">
+    <div class="section-head"><h1 class="h1-sm">THEMES</h1></div>
+    <p class="hint">8 palet · 3 density · persistensi lokal</p>
+    <div class="theme-grid" id="theme-grid">
+      <button class="theme-tile" data-theme-set="sunset">SUNSET</button>
+      <button class="theme-tile" data-theme-set="mint">MINT</button>
+      <button class="theme-tile" data-theme-set="ink">INK</button>
+      <button class="theme-tile" data-theme-set="acid">ACID</button>
+      <button class="theme-tile" data-theme-set="paper">PAPER</button>
+      <button class="theme-tile" data-theme-set="royal">ROYAL</button>
+      <button class="theme-tile" data-theme-set="candy">CANDY</button>
+      <button class="theme-tile" data-theme-set="steel">STEEL</button>
+    </div>
+    <div class="section-head" style="margin-top:24px"><h2 class="h1-sm">DENSITY</h2></div>
+    <div class="row-gap">
+      <button class="btn btn-sm" data-density-set="compact">COMPACT</button>
+      <button class="btn btn-sm" data-density-set="comfortable">COMFORTABLE</button>
+      <button class="btn btn-sm" data-density-set="roomy">ROOMY</button>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="view" id="v-about">
+  <div class="card">
+    <h1 class="h1-sm">ABOUT</h1>
+    <p class="hint">TT/ST · multi-source TikTok resolver</p>
+    <ul class="about-list">
+      <li><b>Sources</b> — yt-dlp · tikwm · douyin-mirror · snaptik</li>
+      <li><b>Rotation</b> — first success wins, all failures logged</li>
+      <li><b>Storage</b> — localStorage, tidak keluar dari browser</li>
+      <li><b>No tracking</b> · <b>no auth</b> · <b>no ads</b></li>
+      <li><b>License</b> — MIT</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <span>TT/ST · v3.0 FINAL</span>
+  <span id="clock"></span>
+</footer>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  const PALETTES = ["sunset","mint","ink","acid","paper","royal","candy","steel"];
+  const HIST_KEY = "tt-hist";
+  const HISTORY_MAX = 200;
+
+  // ---- theme ----
+  const savedTheme = localStorage.getItem("tt-theme") || "sunset";
+  const savedDensity = localStorage.getItem("tt-density") || "comfortable";
+  document.documentElement.dataset.theme = savedTheme;
+  document.documentElement.dataset.density = savedDensity;
+
+  function syncThemeUI() {
+    const cur = document.documentElement.dataset.theme;
+    $$("[data-theme-set]").forEach(el => el.classList.toggle("on", el.dataset.themeSet === cur));
+    $$(".dot").forEach(el => el.classList.toggle("on", el.dataset.dot === cur));
+  }
+  function setTheme(name) {
+    document.documentElement.dataset.theme = name;
+    localStorage.setItem("tt-theme", name);
+    syncThemeUI();
+  }
+  function setDensity(name) {
+    document.documentElement.dataset.density = name;
+    localStorage.setItem("tt-density", name);
+  }
+
+  const picker = $("#theme-picker");
+  PALETTES.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "dot";
+    b.dataset.dot = p;
+    b.title = p;
+    b.style.background = `linear-gradient(135deg, hsl(${PALETTES.indexOf(p)*45}, 80%, 65%), hsl(${PALETTES.indexOf(p)*45+30}, 80%, 45%))`;
+    b.onclick = () => setTheme(p);
+    picker.appendChild(b);
+  });
+
+  $$("[data-theme-set]").forEach(el => el.addEventListener("click", () => setTheme(el.dataset.themeSet)));
+  $$("[data-density-set]").forEach(el => el.addEventListener("click", () => setDensity(el.dataset.densitySet)));
+  syncThemeUI();
+
+  // ---- nav ----
+  function nav(view) {
+    $$(".view").forEach(v => v.classList.toggle("on", v.id === "v-" + view));
+    $$(".nav-link").forEach(l => l.classList.toggle("on", l.dataset.view === view));
+    if (view === "history") renderHistory();
+  }
+  $$(".nav-link").forEach(l => l.addEventListener("click", () => nav(l.dataset.view)));
+  window.nav = nav;
+
+  // ---- toast ----
+  function toast(msg, kind = "") {
+    const el = document.createElement("div");
+    el.className = "toast " + kind;
+    el.textContent = msg;
+    $("#toast-wrap").appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // ---- history (localStorage) ----
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HIST_KEY) || "[]"); }
+    catch { return []; }
+  }
+  function saveHistory(arr) {
+    localStorage.setItem(HIST_KEY, JSON.stringify(arr.slice(0, HISTORY_MAX)));
+  }
+  function pushHistory(entry) {
+    const h = loadHistory();
+    h.unshift({ ...entry, ts: new Date().toISOString() });
+    saveHistory(h);
+  }
+  function renderHistory() {
+    const body = $("#hist-body");
+    const rows = loadHistory();
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="5" class="empty">Belum ada riwayat.</td></tr>';
+      return;
+    }
+    body.innerHTML = rows.map(r => `
+      <tr>
+        <td class="mono">${r.ts.replace("T"," ").slice(0,19)}</td>
+        <td class="trunc" title="${esc(r.title||'-')}">${esc(r.title||'-')}</td>
+        <td>@${esc(r.author||'-')}</td>
+        <td><span class="tag tag-sm">${esc(r.source||'-')}</span></td>
+        <td><span class="tag tag-sm ${r.status==='ok'?'tag-ok':'tag-err'}">${esc(r.status||'-')}</span></td>
+      </tr>`).join("");
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  $("#clear-hist").addEventListener("click", () => {
+    if (!confirm("Hapus riwayat?")) return;
+    localStorage.removeItem(HIST_KEY);
+    renderHistory();
+    toast("RIWAYAT DIHAPUS", "ok");
+  });
+
+  // ---- home resolve ----
+  const urlEl = $("#url"), goEl = $("#go"), statusEl = $("#status"), resultEl = $("#result");
+  const thumbEl = $("#thumb"), titleEl = $("#title");
+  const authorEl = $("#author"), sourceEl = $("#source"), durEl = $("#dur"), sourcesEl = $("#sources");
+  let currentUrl = "", currentTitle = "", currentData = null;
+
+  const setStatus = (msg, kind = "", spin = false) => {
+    statusEl.innerHTML = (spin ? '<span class="spin"></span>' : "") + esc(msg);
+    statusEl.className = "status " + kind;
+  };
+  const fmtDur = s => !s ? "—" : `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+  async function resolveOne(url) {
+    const r = await fetch("/api/resolve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url })
+    });
+    return r.json();
+  }
+
+  async function resolve() {
+    const url = urlEl.value.trim();
+    if (!url) return setStatus("URL kosong", "err");
+    currentUrl = url;
+    setStatus("RESOLVING…", "", true);
+    resultEl.style.display = "none";
+    try {
+      const j = await resolveOne(url);
+      if (!j.ok) {
+        const errMsg = (j.errors||[]).map(e=>e.join(": ")).join(" | ").slice(0,120);
+        pushHistory({ url, title: "-", author: "-", source: "-", status: "fail" });
+        throw new Error(errMsg || "semua sumber gagal");
+      }
+      const d = j.data;
+      currentData = d;
+      currentTitle = d.title;
+      thumbEl.src = d.thumbnail ? `/api/proxy?url=${encodeURIComponent(d.thumbnail)}` : "";
+      titleEl.textContent = d.title || "—";
+      authorEl.textContent = "@" + (d.author || "?");
+      sourceEl.textContent = d.source;
+      durEl.textContent = fmtDur(d.duration);
+      sourcesEl.textContent = (d.fallback && d.fallback.length)
+        ? `fallback: ${d.fallback.join(" → ")} → ${d.source}`
+        : "primary source";
+      resultEl.style.display = "grid";
+      pushHistory({ url, title: d.title, author: d.author, source: d.source, status: "ok" });
+      setStatus("SIAP", "ok");
+      toast("RESOLVED", "ok");
+    } catch (e) {
+      setStatus("GAGAL: " + e.message, "err");
+      toast("RESOLVE GAGAL", "err");
+    }
+  }
+
+  async function downloadKind(kind) {
+    if (!currentUrl) return setStatus("Resolve dulu", "err");
+    setStatus("MENGUNDUH " + kind.toUpperCase() + "…", "", true);
+    try {
+      const r = await fetch(`/api/download/${kind}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: currentUrl })
+      });
+      if (!r.ok) throw new Error((await r.text()).slice(0,120));
+      const blob = await r.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      const ext = kind === "audio" ? "mp3" : kind === "thumb" ? "jpg" : "mp4";
+      a.download = (currentTitle || "tiktok").replace(/[^\w\- ]/g, "_").slice(0,60) + "." + ext;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      setStatus(kind.toUpperCase() + " SELESAI", "ok");
+      toast(kind.toUpperCase() + " SELESAI", "ok");
+    } catch (e) {
+      setStatus("GAGAL: " + e.message, "err");
+      toast("UNDUH GAGAL", "err");
+    }
+  }
+
+  goEl.addEventListener("click", resolve);
+  urlEl.addEventListener("keydown", e => { if (e.key === "Enter") resolve(); });
+  $("#dl-video").addEventListener("click", () => downloadKind("video"));
+  $("#dl-audio").addEventListener("click", () => downloadKind("audio"));
+  $("#dl-thumb").addEventListener("click", () => downloadKind("thumb"));
+  $("#copy").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(currentUrl); toast("URL TERSALIN", "ok"); }
+    catch { toast("COPY GAGAL", "err"); }
+  });
+  $("#again").addEventListener("click", () => {
+    urlEl.value = ""; currentUrl = ""; currentData = null;
+    resultEl.style.display = "none"; setStatus(""); urlEl.focus();
+  });
+
+  // ---- batch ----
+  const batchIn = $("#batch-input"), batchList = $("#batch-list");
+  let batchQueue = [];
+
+  function renderBatch() {
+    if (!batchQueue.length) { batchList.innerHTML = ""; return; }
+    batchList.innerHTML = batchQueue.map((b, i) => `
+      <div class="batch-row">
+        <span class="mono trunc">${esc(b.url)}</span>
+        <span class="b-status ${b.status==='ok'?'ok':b.status==='fail'?'err':''}">${esc(b.status||'pending')}</span>
+        <button class="btn btn-sm" data-batch-dl="${i}">MP4</button>
+      </div>`).join("");
+    $$("[data-batch-dl]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const idx = Number(btn.dataset.batchDl);
+        const item = batchQueue[idx];
+        if (!item || item.status !== "ok") return toast("BELUM SIAP", "err");
+        btn.disabled = true; btn.textContent = "…";
+        try {
+          const r = await fetch("/api/download/video", {
+            method: "POST", headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ url: item.url })
+          });
+          if (!r.ok) throw new Error("gagal");
+          const blob = await r.blob();
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = (item.title || "tiktok").replace(/[^\w\- ]/g,"_").slice(0,60)+".mp4";
+          a.click(); URL.revokeObjectURL(a.href);
+          toast("OK", "ok");
+        } catch { toast("GAGAL", "err"); }
+        btn.disabled = false; btn.textContent = "MP4";
+      });
+    });
+  }
+
+  $("#batch-go").addEventListener("click", async () => {
+    const urls = batchIn.value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    if (!urls.length) return toast("KOSONG", "err");
+    batchQueue = urls.map(u => ({ url: u, status: "pending" }));
+    renderBatch();
+    for (let i = 0; i < batchQueue.length; i++) {
+      batchQueue[i].status = "resolving";
+      renderBatch();
+      try {
+        const j = await resolveOne(batchQueue[i].url);
+        if (j.ok) {
+          batchQueue[i].status = "ok";
+          batchQueue[i].title = j.data.title;
+          pushHistory({ url: batchQueue[i].url, title: j.data.title, author: j.data.author, source: j.data.source, status: "ok" });
+        } else {
+          batchQueue[i].status = "fail";
+          pushHistory({ url: batchQueue[i].url, title: "-", author: "-", source: "-", status: "fail" });
+        }
+      } catch { batchQueue[i].status = "fail"; }
+      renderBatch();
+    }
+    toast("BATCH SELESAI", "ok");
+  });
+
+  $("#batch-dl").addEventListener("click", async () => {
+    const ok = batchQueue.filter(b => b.status === "ok");
+    if (!ok.length) return toast("TIDAK ADA YANG SIAP", "err");
+    toast("MENGUNDUH " + ok.length + " FILE…", "ok");
+    for (const item of ok) {
+      try {
+        const r = await fetch("/api/download/video", {
+          method: "POST", headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ url: item.url })
+        });
+        if (!r.ok) continue;
+        const blob = await r.blob();
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = (item.title||"tiktok").replace(/[^\w\- ]/g,"_").slice(0,60)+".mp4";
+        a.click(); URL.revokeObjectURL(a.href);
+        await new Promise(r => setTimeout(r, 800));
+      } catch {}
+    }
+    toast("SELESAI", "ok");
+  });
+
+  $("#batch-clear").addEventListener("click", () => {
+    batchQueue = []; batchIn.value = ""; renderBatch();
+  });
+
+  // ---- clock ----
+  setInterval(() => {
+    const c = $("#clock");
+    if (c) c.textContent = new Date().toLocaleTimeString("id-ID", { hour12: false });
+  }, 1000);
+
+  // ---- init ----
+  renderHistory();
+})();
+</script>
+</body>
+</html>
